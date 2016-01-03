@@ -91,3 +91,26 @@ fs('/files/*.md')
   .pipe(fs.move('/files/markdown'));
 ```
 
+### read(callback, [options])
+
+Help reading each file in the stream.
+
+`callback` is a function that will get the file content. The nature of the content depend on the `options` parameter:
+
+* If `options` is `null`, `callback` will get a buffer object.
+* If `options` is a string representing en encoding, `callback` will get a string.
+* If `options` is [a stream configuration object](https://nodejs.org/api/fs.html#fs_fs_createreadstream_path_options), `callback` will get a readable stream.
+
+The default value for `options` is 'utf8'.
+
+> **NOTE:** _If the file is actually a directory, the callback function will get an array of all the files in the directory instead of a buffer or a string. See [fs.readdir](https://nodejs.org/api/fs.html#fs_fs_readdir_path_callback) for details._
+
+```js
+var fs = require('fs-stream');
+
+fs('/files/*.*')
+  .pipe(fs.read(function (fileContent) {
+    console.log(fileContent);
+  }));
+```
+
