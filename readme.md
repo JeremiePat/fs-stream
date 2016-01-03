@@ -30,3 +30,26 @@ fs('/files/*.md')
   .pipe(fs.copy('/files/markdown'), {add: true});
 ```
 
+### create(path, [options])
+
+Create a file or directory within each directory in the stream. `path` can be
+
+* `String`: The relative path to the file in the current directory from the stream.
+* `Function`: This function get the actual path to the directory and must return the relative path from that directory to the file to create.
+
+The optional `options` parameter is an object with the following optionnal keys:
+* `type`: Either `file` or `directory` (default: **file**)
+* `add`: A boolean indicating if the copied file must be added to the stream. (default: **true**)
+
+```js
+var fs = require('fs-stream');
+
+fs('/files')
+  .pipe(fs.create('markdown', { type: 'directory' }))
+  .pipe(fs.create(function (dir) {
+    if ((/\/markdown$/).test(dir)) {
+      return 'foo.md';
+    }
+  }));
+```
+
