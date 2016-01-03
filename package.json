@@ -9,6 +9,7 @@
   "author": "Jeremie Patonnier",
   "license": "MIT",
   "dependencies": {
+    "fs-extra": "^0.26.3",
     "glob-stream": "^5.3.1",
     "through2": "^2.0.0"
   }

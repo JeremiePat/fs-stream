@@ -23,4 +23,6 @@ function streamer(globPatern, options) {
     }));
 }
 
+streamer.copy   = require('./lib/copy');
+
 module.exports = streamer;
