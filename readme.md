@@ -9,20 +9,20 @@ Usage
 var fs = require('fs-stream');
 
 fs('**/*.*')
-  .pipe(fs.rename(function (file) {
-    return file.name.replace('/\.txt$/', '.md');
+  .pipe(fs.rename(function (path) {
+    return path.replace('/\.txt$/', '.md');
   }))
   .pipe(fs.move('target/dir'))
   .pipe(fs.copy('another/target/dir'))
   .pipe(fs.remove('*.js'))
-  .pipe(fs.filter(function (file) {
-    return (/\.md$/i).test(file.path);
+  .pipe(fs.filter(function (path) {
+    return (/\.md$/i).test(path);
   }))
   .pipe(fs.read(function (readStream) {
     readStream.pipe(process.stdout);
   }), {})
-  .pipe(fs.watch(function (file) {
-    console.log(file, 'has changed.');
+  .pipe(fs.watch(function (path) {
+    console.log(path, 'has changed.');
   }))
   .pipe(fs.write('\nHi!', 'r+'))
 ```
@@ -32,7 +32,7 @@ API
 
 ### _module_(globPattern, [options])
 
-Return a stream of file and dir. For a full documentation of `options` and glob pattern, go read the [glob-stream documentation](https://github.com/gulpjs/glob-stream).
+Return a stream of files and directories. For a full documentation of `options` and glob patterns, take a look at the [glob-stream documentation](https://github.com/gulpjs/glob-stream).
 
 ### copy(dir, [options])
 
@@ -44,7 +44,7 @@ Copy all the files in the stream. `dir` can be:
 > **NOTE:** _relative path are resolved against the same base `cwd` as the one used to set up the stream._
 
 The optional `options` parameter is an object with the following optionnal keys:
-* `override`: A boolean indicating if the copy must override an existing file with the same name as the new one (default: **false**)
+* `override`: A boolean indicating if the copy must override an existing file with the same name (default: **false**)
 * `add`: A boolean indicating if the copied file must be added to the stream. (default: **false**)
 
 ```js
@@ -58,8 +58,10 @@ fs('/files/*.md')
 
 Create a file or directory within each directory in the stream. `path` can be
 
-* `String`: The relative path to the file in the current directory from the stream.
-* `Function`: This function get the actual path to the directory and must return the relative path from that directory to the file to create.
+* `String`: The relative path to the file to be created.
+* `Function`: This function get the actual path to the directory and must return the relative path to the file to be created.
+
+> **NOTE:** _The relative path of each file is resolved from the related directory from the stream._
 
 The optional `options` parameter is an object with the following optionnal keys:
 * `type`: Either `file` or `directory` (default: **file**)
@@ -81,12 +83,12 @@ fs('/files')
 
 Filter the files in the stream. `pattern` can be:
 
-* `String`: A glob pattern files must match.
-* `Function`: This function get the actual path to the file and must return a glob pattern string.
+* `String`: A glob pattern that files must match.
+* `Function`: This function get the actual path to the file and must return a bollean.
 
 > **NOTE:** _relative patterns are resolved against the same base `cwd` as the one used to set up the stream._
 
-The optional `keep` parameter indicate if a file matching the pattern must be kept in (true) or excluded from (false) the stream (default: **true**)
+The optional `keep` parameter indicate if a file matching the pattern must be kept in (`true`) or excluded from (`false`) the stream (default: **true**)
 
 ```js
 var fs = require('fs-stream');
@@ -104,9 +106,9 @@ Move all the files in the stream. `dir` can be:
 
 > **NOTE:** _relative path are resolved against the same base `cwd` as the one used to set up the stream._
 
-The optional `override` parameter indicate that if a file with the same name exist in the target directory, it must be overriden (default: **true**)
+The optional `override` parameter indicate if a file with the same name in the target directory must be overriden (default: **true**)
 
-If the path provide is something else than a directory, the parent directory will be used. If the directory provided does not exist, it is created automatically.
+If the provided path is something else than a directory, the parent directory will be used. If the directory provided does not exist, it is created automatically.
 
 ```js
 var fs = require('fs-stream');
@@ -122,10 +124,10 @@ Help reading each file in the stream.
 `callback` is a function that will get the file content. The nature of the content depend on the `options` parameter:
 
 * If `options` is `null`, `callback` will get a buffer object.
-* If `options` is a string representing en encoding, `callback` will get a string.
+* If `options` is a string representing an encoding, `callback` will get a string.
 * If `options` is [a stream configuration object](https://nodejs.org/api/fs.html#fs_fs_createreadstream_path_options), `callback` will get a readable stream.
 
-The default value for `options` is 'utf8'.
+The default value for `options` is `utf8`.
 
 > **NOTE:** _If the file is actually a directory, the callback function will get an array of all the files in the directory instead of a buffer or a string. See [fs.readdir](https://nodejs.org/api/fs.html#fs_fs_readdir_path_callback) for details._
 
@@ -140,9 +142,9 @@ fs('/files/*.*')
 
 ### remove(pattern)
 
-Delete some files in the stream. `pattern` can be:
+Delete all files that match the pattern. `pattern` can be:
 
-* `String`: A glob pattern files to be deleted must match.
+* `String`: A glob pattern that files must match to be deleted.
 * `Function`: This function get the actual path to the file and must return `true` (remove the file) or `false` (keep the file).
 
 > **NOTE:** _relative patterns are resolved against the same base `cwd` as the one used to set up the stream._
@@ -158,7 +160,7 @@ fs('/files/*.*')
 
 Change the name of all the files in the stream. `name` can be:
 
-* `String`: Rename the first file in the stream or override all up to the last.
+* `String`: Rename the first file in the stream or override all of them up to the last.
 * `Function`: This function get the actual path to the file and must return a
 string which is the new name of the file.
 
@@ -215,6 +217,6 @@ var fs = require('fs-stream');
 
 fs('**/*.log')
   .pipe(fs.write(function (file) {
-    return 'Last update: ' + Date.now()
+    return '\nLast update: ' + Date.now()
   }, 'r+'));
 ```
