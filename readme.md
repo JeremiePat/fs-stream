@@ -71,3 +71,23 @@ fs('/files/*.*')
   .pipe(fs.filter('/files/*.md'));
 ```
 
+### move(dir, [override])
+
+Move all the files in the stream. `dir` can be:
+
+* `String`: The path to the directory where to move all the files
+* `Function`: This function get the actual path to the file and must return the path to the directory where the file must be moved.
+
+> **NOTE:** _relative path are resolved against the same base `cwd` as the one used to set up the stream._
+
+The optional `override` parameter indicate that if a file with the same name exist in the target directory, it must be overriden (default: **true**)
+
+If the path provide is something else than a directory, the parent directory will be used. If the directory provided does not exist, it is created automatically.
+
+```js
+var fs = require('fs-stream');
+
+fs('/files/*.md')
+  .pipe(fs.move('/files/markdown'));
+```
+
