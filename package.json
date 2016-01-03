@@ -1,13 +1,20 @@
 {
+  "author": "Jeremie Patonnier <jeremie@patonnier.net> (http://jeremie.patonnier.net/)",
   "name": "fs-stream",
-  "version": "0.0.1",
   "description": "Utilities that helps manipulating a file system through stream",
+  "license": "MIT",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JeremiePat/fs-stream.git"
+  },
   "main": "index.js",
+  "engines" : {
+    "node" : ">=0.10"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Jeremie Patonnier",
-  "license": "MIT",
   "dependencies": {
     "fs-extra": "^0.26.3",
     "glob-stream": "^5.3.1",
