@@ -114,3 +114,19 @@ fs('/files/*.*')
   }));
 ```
 
+### remove(pattern)
+
+Delete some files in the stream. `pattern` can be:
+
+* `String`: A glob pattern files to be deleted must match.
+* `Function`: This function get the actual path to the file and must return `true` (remove the file) or `false` (keep the file).
+
+> **NOTE:** _relative patterns are resolved against the same base `cwd` as the one used to set up the stream._
+
+```js
+var fs = require('fs-stream');
+
+fs('/files/*.*')
+  .pipe(fs.remove('/files/*.md'));
+```
+

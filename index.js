@@ -28,5 +28,6 @@ streamer.create = require('./lib/create');
 streamer.filter = require('./lib/filter');
 streamer.move   = require('./lib/move');
 streamer.read   = require('./lib/read');
+streamer.remove = require('./lib/remove');
 
 module.exports = streamer;
