@@ -3,6 +3,30 @@ fs-stream
 
 A wrapper and a set of utilities around [glob-stream](https://www.npmjs.com/package/glob-stream) to handle simple files manipulation through streams.
 
+Usage
+-------------------------------------------------------------------------------
+```js
+var fs = require('fs-stream');
+
+fs('**/*.*')
+  .pipe(fs.rename(function (file) {
+    return file.name.replace('/\.txt$/', '.md');
+  }))
+  .pipe(fs.move('target/dir'))
+  .pipe(fs.copy('another/target/dir'))
+  .pipe(fs.remove('*.js'))
+  .pipe(fs.filter(function (file) {
+    return (/\.md$/i).test(file.path);
+  }))
+  .pipe(fs.read(function (readStream) {
+    readStream.pipe(process.stdout);
+  }), {})
+  .pipe(fs.watch(function (file) {
+    console.log(file, 'has changed.');
+  }))
+  .pipe(fs.write('\nHi!', 'r+'))
+```
+
 API
 -------------------------------------------------------------------------------
 
