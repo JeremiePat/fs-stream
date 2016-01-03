@@ -25,5 +25,6 @@ function streamer(globPatern, options) {
 
 streamer.copy   = require('./lib/copy');
 streamer.create = require('./lib/create');
+streamer.filter = require('./lib/filter');
 
 module.exports = streamer;

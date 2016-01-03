@@ -11,6 +11,7 @@
   "dependencies": {
     "fs-extra": "^0.26.3",
     "glob-stream": "^5.3.1",
+    "minimatch": "^3.0.0",
     "through2": "^2.0.0"
   }
 }

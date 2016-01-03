@@ -53,3 +53,21 @@ fs('/files')
   }));
 ```
 
+### filter(pattern, keep)
+
+Filter the files in the stream. `pattern` can be:
+
+* `String`: A glob pattern files must match.
+* `Function`: This function get the actual path to the file and must return a glob pattern string.
+
+> **NOTE:** _relative patterns are resolved against the same base `cwd` as the one used to set up the stream._
+
+The optional `keep` parameter indicate if a file matching the pattern must be kept in (true) or excluded from (false) the stream (default: **true**)
+
+```js
+var fs = require('fs-stream');
+
+fs('/files/*.*')
+  .pipe(fs.filter('/files/*.md'));
+```
+
