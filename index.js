@@ -29,5 +29,6 @@ streamer.filter = require('./lib/filter');
 streamer.move   = require('./lib/move');
 streamer.read   = require('./lib/read');
 streamer.remove = require('./lib/remove');
+streamer.rename = require('./lib/rename');
 
 module.exports = streamer;

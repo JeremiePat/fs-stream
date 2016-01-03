@@ -130,3 +130,24 @@ fs('/files/*.*')
   .pipe(fs.remove('/files/*.md'));
 ```
 
+### rename(name, [override])
+
+Change the name of all the files in the stream. `name` can be:
+
+* `String`: Rename the first file in the stream or override all up to the last.
+* `Function`: This function get the actual path to the file and must return a
+string which is the new name of the file.
+
+The optional `override` parameter indicate if a file with the same name must be overriden (default: **false**)
+
+```js
+var path = require('path');
+var fs   = require('fs-stream');
+
+fs('**/*.md')
+  .pipe(fs.rename(function (file) {
+    var name = path.parse(file.path).base;
+    return name.replace(/\.md$/, '.txt');
+  }));
+```
+
