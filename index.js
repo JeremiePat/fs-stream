@@ -30,5 +30,6 @@ streamer.move   = require('./lib/move');
 streamer.read   = require('./lib/read');
 streamer.remove = require('./lib/remove');
 streamer.rename = require('./lib/rename');
+streamer.watch  = require('./lib/watch');
 
 module.exports = streamer;

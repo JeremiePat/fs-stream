@@ -151,3 +151,21 @@ fs('**/*.md')
   }));
 ```
 
+### watch(listener)
+
+Watch for changes on each files of the stream.
+
+When a change occure, the `listener` function is called and get the full path of the changed file.
+
+> **NOTE:** _Watching files is subject to the restrictions documented with the [fs.watch](https://nodejs.org/dist/latest-v4.x/docs/api/fs.html#fs_fs_watch_filename_options_listener) function._
+
+```js
+var fs = require('fs-stream');
+
+fs('**/*.md')
+  .pipe(fs.watch(function (file) {
+    var name = path.parse(file.path).base;
+    console.log(name, 'as changed!');
+  }));
+```
+
