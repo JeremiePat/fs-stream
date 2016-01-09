@@ -9,16 +9,20 @@
     "url": "https://github.com/JeremiePat/fs-stream.git"
   },
   "main": "index.js",
-  "engines" : {
-    "node" : ">=0.10"
+  "engines": {
+    "node": ">=0.10"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/mocha/bin/mocha"
   },
   "dependencies": {
     "fs-extra": "^0.26.3",
     "glob-stream": "^5.3.1",
     "minimatch": "^3.0.0",
     "through2": "^2.0.0"
+  },
+  "devDependencies": {
+    "mocha": "^2.3.4",
+    "rimraf": "^2.5.0"
   }
 }
