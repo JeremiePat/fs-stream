@@ -1,9 +1,9 @@
 'use strict';
 
 var fsnode  = require('fs');
+var fsx     = require('fs-extra');
 var path    = require('path');
 var through = require('through2');
-var rm      = require('rimraf');
 var assert  = require('assert');
 
 var fs = require('../index.js');
@@ -14,7 +14,7 @@ describe('create', function () {
   var dir  = 'dir';
 
   after(function () {
-    rm.sync(path.join(root, dir));
+    fsx.removeSync(path.join(root, dir));
   });
 
   var configuration = [
