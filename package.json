@@ -10,7 +10,7 @@
   },
   "main": "index.js",
   "engines": {
-    "node": ">=0.10"
+    "node": ">=0.12"
   },
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha"
