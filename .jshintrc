@@ -31,5 +31,12 @@
   "maxparams"   : 3,
   "maxdepth"    : 3,
   "jquery"      : false,
-  "globals" : {}
+  "globals" : {
+    "describe"  : true,
+    "it"        : true,
+    "after"     : true,
+    "before"    : true,
+    "afterEach" : true,
+    "beforeEach": true
+  }
 }
