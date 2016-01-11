@@ -31,15 +31,15 @@ describe('create', function () {
 
   function buildFirstParam(paramType) {
     return function (conf, i) {
+      var type     = conf.type || 'file';
+      var typeFn   = type === 'file' ? 'isFile' : 'isDirectory';
+      var typeTile = 'The object created is a ' + type;
+
       var addType  = 'add' in conf ? conf.add ? 'true' : 'false' : 'default';
       var add      = addType === 'default' ? true : conf.add;
       var addTitle = [
         'The new ', type, ' is', (add ? ' ' : ' not '), 'part of the stream'
       ].join('');
-
-      var type     = conf.type || 'file';
-      var typeFn   = type === 'file' ? 'isFile' : 'isDirectory';
-      var typeTile = 'The object created is a ' + type;
 
       var filename = paramType + i + '.txt';
       var filepath = path.join(root, dir, filename);
@@ -50,10 +50,10 @@ describe('create', function () {
         paramType, ' path, opt.add === ', addType, ')'
       ].join('');
 
-      var files    = [];
+      var files = [];
 
       function inStream(exist) {
-        if (exist) { return files.indexOf(filepath) > -1 }
+        if (exist) { return files.indexOf(filepath) > -1; }
         return files.indexOf(filepath) === -1;
       }
 
@@ -64,7 +64,7 @@ describe('create', function () {
           file = function (f) {
             assert(f === root, 'Path as a function get a path as param');
             return filerel;
-          }
+          };
         }
 
         function end() {
@@ -87,7 +87,7 @@ describe('create', function () {
             cb(null, file);
           }));
       });
-    }
+    };
   }
 
   configuration.forEach(buildFirstParam('string'));
