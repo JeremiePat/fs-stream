@@ -67,7 +67,7 @@ describe('copy', function () {
 
       var title    = [
         (ovr ? '2 files ' : '1 file '), 'has been copied',
-        ' (override: ', ovrType, ', add: ', addType, ')'
+        ' (', paramType, ' path, override: ', ovrType, ', add: ', addType, ')'
       ].join('');
 
       function inStream(exist, filepath) {

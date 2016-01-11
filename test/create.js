@@ -47,7 +47,7 @@ describe('create', function () {
 
       var title    = [
         'A new ', type, (conf.type ? ' (' : ' (implicite, '),
-        paramType, ' path, opt.add === ', addType, ')'
+        paramType, ' path, add: ', addType, ')'
       ].join('');
 
       var files = [];
