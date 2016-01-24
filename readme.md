@@ -88,7 +88,7 @@ Filter the files in the stream. `pattern` can be:
 
 > **NOTE:** _relative patterns are resolved against the same base `cwd` as the one used to set up the stream._
 
-The optional `keep` parameter indicate if a file matching the pattern must be kept in (`true`) or excluded from (`false`) the stream (default: **true**)
+The optional `keep` parameter indicate if files matching the pattern must be kept in the stream and the others to be excluded (`true`), or the other way around (`false`)  (default: **true**)
 
 ```js
 var fs = require('fs-stream');
