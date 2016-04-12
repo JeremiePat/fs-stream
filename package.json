@@ -3,7 +3,7 @@
   "name": "fs-stream",
   "description": "Utilities that helps manipulating a file system through stream",
   "license": "MIT",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "repository": {
     "type": "git",
     "url": "https://github.com/JeremiePat/fs-stream.git"

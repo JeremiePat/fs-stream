@@ -43,7 +43,7 @@ Copy all the files in the stream. `dir` can be:
 
 > **NOTE:** _relative path are resolved against the same base `cwd` as the one used to set up the stream._
 
-The optional `options` parameter is an object with the following optionnal keys:
+The optional `options` parameter is an object with the following optional keys:
 * `override`: A boolean indicating if the copy must override an existing file with the same name (default: **false**)
 * `add`: A boolean indicating if the copied file must be added to the stream. (default: **false**)
 
@@ -84,7 +84,7 @@ fs('/files')
 Filter the files in the stream. `pattern` can be:
 
 * `String`: A glob pattern that files must match.
-* `Function`: This function get the actual path to the file and must return a bollean.
+* `Function`: This function get the actual path to the file and must return a boolean.
 
 > **NOTE:** _relative patterns are resolved against the same base `cwd` as the one used to set up the stream._
 
@@ -106,7 +106,7 @@ Move all the files in the stream. `dir` can be:
 
 > **NOTE:** _relative path are resolved against the same base `cwd` as the one used to set up the stream._
 
-The optional `override` parameter indicate if a file with the same name in the target directory must be overriden (default: **true**)
+The optional `override` parameter indicate if a file with the same name in the target directory must be overridden (default: **true**)
 
 If the provided path is something else than a directory, the parent directory will be used. If the directory provided does not exist, it is created automatically.
 
@@ -164,7 +164,7 @@ Change the name of all the files in the stream. `name` can be:
 * `Function`: This function get the actual path to the file and must return a
 string which is the new name of the file.
 
-The optional `override` parameter indicate if a file with the same name must be overriden (default: **false**)
+The optional `override` parameter indicate if a file with the same name must be overridden (default: **false**). Careful as this can take long on large file system. It's more efficient to remove the unnecessary files as they transit through the stream then renaming the last one. It's also worth noting that the order of the files in the stream is not guaranteed.
 
 ```js
 var path = require('path');
@@ -181,7 +181,7 @@ fs('**/*.md')
 
 Watch for changes on each files of the stream.
 
-When a change occure, the `listener` function is called and get the full path of the changed file.
+When a change occurs, the `listener` function is called and get the full path of the changed file.
 
 > **NOTE:** _Watching files is subject to the restrictions documented with the [fs.watch](https://nodejs.org/dist/latest-v4.x/docs/api/fs.html#fs_fs_watch_filename_options_listener) function._
 
@@ -197,7 +197,7 @@ fs('**/*.md')
 
 ### write(data, [mode])
 
-Performe a simple writing action on all files from the stream. `data` can be:
+Perform a simple writing action on all files from the stream. `data` can be:
 
 * `String`: The content to push inside each files
 * `Function`: This function get the actual path to the file and must return a
@@ -210,7 +210,7 @@ string which is the content to push into the file.
 
 The default value for `mode` is `w`;
 
-> **NOTE:** _For more advance writing action (like writing binary data), it is recommanded to use ad hoc [writing streams](https://nodejs.org/api/fs.html#fs_fs_createwritestream_path_options)._
+> **NOTE:** _For more advance writing action (like writing binary data), it is recommended to use ad hoc [writing streams](https://nodejs.org/api/fs.html#fs_fs_createwritestream_path_options)._
 
 ```js
 var fs = require('fs-stream');
