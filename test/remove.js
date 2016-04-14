@@ -4,7 +4,7 @@ var fsx       = require('fs-extra');
 var path      = require('path');
 var minimatch = require('minimatch');
 var through   = require('through2');
-var assert    = require('assert');
+var assert    = require('../tools/test.assert.js');
 
 var fs = require('../index.js');
 
@@ -49,20 +49,22 @@ describe('remove', function () {
 
       if (paramType === 'fn') {
         pattern = function (file) {
-          assert(typeof file === 'string', 'Path as a function get a filepath as param');
+          assert.pathMatch(file, new RegExp(path.join('^', root, dir)));
           return minimatch(file, path.resolve(root, conf.pattern));
         };
       }
 
       it(title, function (done) {
         function end() {
-          assert.strictEqual(files.length, conf.expect, 'We have ' + conf.expect + ' files remaining in the stream');
+          assert.streamLength(files, conf.expect, true);
 
-          var count = -1; // the initial directory must not be count
-          fsx.walk(path.join(root, dir)).on('data', function () {
-            count++;
+          var count = [];
+          fsx.walk(path.join(root, dir)).on('data', function (f) {
+            count.push(f.path);
           }).on('end', function () {
-            assert.strictEqual(count, conf.expect, 'We have ' + conf.expect + ' files remaining in the file system');
+            // conf.expect + 1 because fsx.walk add the initial
+            // directory but we don't want to count it.
+            assert.streamLength(count, conf.expect + 1, true);
             done();
           });
         }

@@ -4,7 +4,7 @@ var fsnode  = require('fs');
 var fsx     = require('fs-extra');
 var path    = require('path');
 var through = require('through2');
-var assert  = require('assert');
+var assert  = require('../tools/test.assert.js');
 
 var fs = require('../index.js');
 
@@ -25,13 +25,11 @@ describe('write', function () {
   });
 
   function chkAppend(filepath) {
-    var content = fsnode.readFileSync(filepath, 'utf8');
-    assert.strictEqual(content, filepath + str, 'The new content has been append to the file');
+    assert.fileHasContent(filepath, filepath + str, true);
   }
 
   function chkOverride(filepath) {
-    var content = fsnode.readFileSync(filepath, 'utf8');
-    assert.strictEqual(content, str, 'The new content has override the old content of the file');
+    assert.fileHasContent(filepath, str, true);
   }
 
   var configuration = [

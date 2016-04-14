@@ -4,7 +4,7 @@ var fsnode  = require('fs');
 var fsx     = require('fs-extra');
 var path    = require('path');
 var through = require('through2');
-var assert  = require('assert');
+var assert  = require('../tools/test.assert.js');
 
 var fs = require('../index.js');
 
@@ -41,48 +41,39 @@ describe('move', function () {
     fsx.removeSync(path.join(root, dir));
   });
 
-  function fileExist(file) {
-    var exist = true;
-
-    try { fsnode.accessSync(file); }
-    catch (err) { exist = false; }
-
-    return exist;
-  }
-
   function chkTargetTrue(files) {
-    assert(!fileExist(absF1o), file1o + ' no longer exists');
-    assert( fileExist(absF1t), file1t + ' has been created');
-    assert(!fileExist(absF2o), file2o + ' no longer exists');
-    assert( fileExist(absF2t), file2t + ' always exists');
-    assert(files.indexOf(absF1o) === -1, file1o + ' is no longer in the stream');
-    assert(files.indexOf(absF1t) > -1,   file1t + ' is now part of the stream');
-    assert(files.indexOf(absF2o) === -1, file2o + ' is no longer in the stream');
-    assert(files.indexOf(absF2t) > -1,   file2t + ' is not part of the stream');
-    assert.strictEqual(fsnode.readFileSync(absF2t, 'utf8'), file2o, file2t + ' content has changed');
+    assert.fileExist(absF1o, false); // file1o no longer exists
+    assert.fileExist(absF1t, true);  // file1t has been created
+    assert.fileExist(absF2o, false); // file2o no longer exists
+    assert.fileExist(absF2t, true);  // file2t always exists
+    assert.fileInStream(files, absF1o, false); // file1o is no longer in the stream
+    assert.fileInStream(files, absF1t, true);  // file1t is now part of the stream
+    assert.fileInStream(files, absF1o, false); // file2o is no longer in the stream
+    assert.fileInStream(files, absF2t, true);  // file2t is not part of the stream
+    assert.fileHasContent(absF2t, file2o, true); // file2t content has changed
   }
 
   function chkTargetFalse(files) {
-    assert(!fileExist(absF1o), file1o + ' no longer exists');
-    assert( fileExist(absF1t), file1t + ' has been created');
-    assert( fileExist(absF2o), file2o + ' still exists');
-    assert( fileExist(absF2t), file2t + ' always exists');
-    assert(files.indexOf(absF1o) === -1, file1o + ' is no longer in the stream');
-    assert(files.indexOf(absF1t) > -1,   file1t + ' is now part of the stream');
-    assert(files.indexOf(absF2o) > -1,   file2o + ' is still part of the stream');
-    assert(files.indexOf(absF2t) === -1, file2t + ' is not part of the stream');
-    assert.strictEqual(fsnode.readFileSync(absF2t, 'utf8'), file2t, file2t + ' content has not changed');
+    assert.fileExist(absF1o, false); // file1o no longer exists
+    assert.fileExist(absF1t, true);  // file1t has been created
+    assert.fileExist(absF2o, true);  // file2o still exists
+    assert.fileExist(absF2t, true);  // file2t always exists
+    assert.fileInStream(files, absF1o, false); // file1o is no longer in the stream
+    assert.fileInStream(files, absF1t, true);  // file1t is now part of the stream
+    assert.fileInStream(files, absF2o, true);  // file2o is still part of the stream
+    assert.fileInStream(files, absF2t, false); // file2t is not part of the stream
+    assert.fileHasContent(absF2t, file2t, true); // file2t content has not changed
   }
 
   function chkTargetNoDir(files) {
-    assert(!fileExist(absF1o), file1o + ' no longer exists');
-    assert( fileExist(absF1n), file1n + ' has been created');
-    assert(!fileExist(absF2o), file2o + ' no longer exists');
-    assert( fileExist(absF2n), file2n + ' has been created');
-    assert(files.indexOf(absF1o) === -1, file1o + ' is no longer in the stream');
-    assert(files.indexOf(absF1n) > -1,   file1n + ' is now part of the stream');
-    assert(files.indexOf(absF2o) === -1, file2o + ' is no longer in the stream');
-    assert(files.indexOf(absF2n) > -1,   file2n + ' is now part of the stream');
+    assert.fileExist(absF1o, false); // file1o no longer exists
+    assert.fileExist(absF1n, true ); // file1n has been created
+    assert.fileExist(absF2o, false); // file2o no longer exists
+    assert.fileExist(absF2n, true ); // file2n has been created
+    assert.fileInStream(files, absF1o, false); // file1o is no longer in the stream
+    assert.fileInStream(files, absF1n, true ); // file1n is now part of the stream
+    assert.fileInStream(files, absF1o, false); // file2o is no longer in the stream
+    assert.fileInStream(files, absF2n, true ); // file2n is now part of the stream
   }
 
   var configuration = [
@@ -118,7 +109,8 @@ describe('move', function () {
         if (paramType === 'fn') {
           var file = conf.param[0];
           conf.param[0] = function (f) {
-            assert(f.match(new RegExp('^' + path.join(root, origin))), 'Path as a function get a path as param');
+            //Path as a function get a path as param
+            assert.pathMatch(f, new RegExp('^' + path.join(root, origin)));
             return file;
           };
         }

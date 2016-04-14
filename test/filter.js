@@ -1,11 +1,10 @@
 'use strict';
 
-var fsnode    = require('fs');
 var fsx       = require('fs-extra');
 var path      = require('path');
 var minimatch = require('minimatch');
 var through   = require('through2');
-var assert    = require('assert');
+var assert    = require('../tools/test.assert.js');
 
 var fs = require('../index.js');
 
@@ -44,7 +43,7 @@ describe('filter', function () {
 
       if (paramType === 'fn') {
         pattern = function (file) {
-          assert(typeof file === 'string', 'Path as a function get a filepath as param');
+          assert.fileExist(file, true);
           return minimatch(file, path.resolve(root, conf[0]));
         };
       }
@@ -57,21 +56,17 @@ describe('filter', function () {
 
       var files = [];
 
-      function chkExt(ext, files) {
-        return files.every(function (f) {
-          return f.slice(-1 * ext.length) === ext;
-        });
-      }
-
       it(title, function (done) {
         function end() {
-          assert.strictEqual(files.length, 2, 'There is 2 file left in the stream.');
+          assert.streamLength(files, 2, true);
 
-          if (keepType === 'false') {
-            assert(chkExt('.md',  files), 'The remaining file is the markdown file.');
-          } else {
-            assert(chkExt('.txt', files), 'The remaining files are the text files.');
-          }
+          files.forEach(function (f) {
+            if (keepType === 'false') {
+              assert.pathMatch(f, /\.md$/);
+            } else {
+              assert.pathMatch(f, /\.txt$/);
+            }
+          });
 
           done();
         }

@@ -4,7 +4,7 @@ var fsnode  = require('fs');
 var fsx     = require('fs-extra');
 var path    = require('path');
 var through = require('through2');
-var assert  = require('assert');
+var assert  = require('../tools/test.assert.js');
 
 var fs = require('../index.js');
 
@@ -53,15 +53,9 @@ describe('copy', function () {
     return function (conf) {
       var addType  = 'add' in conf ? conf.add ? 'true' : 'false' : 'default';
       var add      = addType === 'default' ? false : conf.add;
-      var addTitle = [
-        'The copied field is', (add ? ' ' : ' not '), 'part of the stream'
-      ].join('');
 
       var ovrType  = 'override' in conf ? conf.override ? 'true' : 'false' : 'default';
       var ovr      = ovrType === 'default' ? false : conf.override;
-      var ovrTitle = [
-        'The file has', (ovr ? ' ' : ' not ') ,'been overriden'
-      ].join('');
 
       var files = [];
 
@@ -70,30 +64,21 @@ describe('copy', function () {
         ' (', paramType, ' path, override: ', ovrType, ', add: ', addType, ')'
       ].join('');
 
-      function inStream(exist, filepath) {
-        if (exist) { return files.indexOf(filepath) > -1; }
-        return files.indexOf(filepath) === -1;
-      }
-
-      function isOverriden(r) {
-        if (r) { return fsnode.readFileSync(f2d, 'utf8') === origin; }
-        return fsnode.readFileSync(f2d, 'utf8') === dest;
-      }
-
       it (title, function (done) {
         var dir = dest;
 
         if (paramType === 'fn') {
           dir = function (f) {
-            assert(f === f1o || f === f2o, 'Path as a function get a file path as param');
+            // Path as a function get a valide file path as param;
+            assert.fileExist(f, true);
             return dest;
           };
         }
 
         function end() {
-          assert(inStream(add, f1d), addTitle);
-          assert(inStream(add, f2d), addTitle);
-          assert(isOverriden(ovr), ovrTitle);
+          assert.fileInStream(files, f1d, add);
+          assert.fileInStream(files, f2d, add);
+          assert.fileHasContent(f2d, ovr ? origin : dest, true);
           done();
         }
 

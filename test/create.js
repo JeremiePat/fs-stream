@@ -1,10 +1,9 @@
 'use strict';
 
-var fsnode  = require('fs');
 var fsx     = require('fs-extra');
 var path    = require('path');
 var through = require('through2');
-var assert  = require('assert');
+var assert = require('../tools/test.assert.js');
 
 var fs = require('../index.js');
 
@@ -32,14 +31,9 @@ describe('create', function () {
   function buildFirstParam(paramType) {
     return function (conf, i) {
       var type     = conf.type || 'file';
-      var typeFn   = type === 'file' ? 'isFile' : 'isDirectory';
-      var typeTile = 'The object created is a ' + type;
 
       var addType  = 'add' in conf ? conf.add ? 'true' : 'false' : 'default';
       var add      = addType === 'default' ? true : conf.add;
-      var addTitle = [
-        'The new ', type, ' is', (add ? ' ' : ' not '), 'part of the stream'
-      ].join('');
 
       var filename = paramType + i + '.txt';
       var filepath = path.join(root, dir, filename);
@@ -52,29 +46,21 @@ describe('create', function () {
 
       var files = [];
 
-      function inStream(exist) {
-        if (exist) { return files.indexOf(filepath) > -1; }
-        return files.indexOf(filepath) === -1;
-      }
-
       it(title, function (done) {
         var file = filerel;
 
         if (paramType === 'fn') {
           file = function (f) {
-            assert(f === root, 'Path as a function get a path as param');
+            // Path as a function get a path as param
+            assert.isDirOrFile(f, 'directory');
             return filerel;
           };
         }
 
         function end() {
-          assert(inStream(add), addTitle);
-
-          fsnode.stat(filepath, function (err, stats) {
-            var isGoodType = err ? false : stats[typeFn]();
-            assert(isGoodType, typeTile);
-            done();
-          });
+          assert.fileInStream(files, filepath, add);
+          assert.isDirOrFile(filepath, type);
+          done();
         }
 
         fs(root)

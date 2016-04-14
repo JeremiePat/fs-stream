@@ -1,10 +1,10 @@
 'use strict';
 
-var fsnode    = require('fs');
-var fsx       = require('fs-extra');
-var path      = require('path');
-var through   = require('through2');
-var assert    = require('assert');
+var fsnode  = require('fs');
+var fsx     = require('fs-extra');
+var path    = require('path');
+var through = require('through2');
+var assert  = require('../tools/test.assert.js');
 
 var fs = require('../index.js');
 
@@ -30,25 +30,16 @@ describe('rename', function () {
     fsx.removeSync(path.join(root, dir));
   });
 
-  function fileExist(file) {
-    try {
-      fsnode.accessSync(file, fsnode.R_OK);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
   function chkNotOveride(files) {
-    assert(fileExist(fullPath3), 'The renamed file exist');
-    assert.strictEqual(files.length, 2, 'We still have 2 files');
-    assert.notStrictEqual(files.indexOf(fullPath3), -1, 'The renamed file has been pushed in the stream');
+    assert.fileExist(fullPath3, true);
+    assert.streamLength(files, 2, true);
+    assert.fileInStream(files, fullPath3, true);
   }
 
   function chkOveride(files) {
-    assert(fileExist(fullPath3), 'The renamed file exist');
-    assert.strictEqual(files.length, 1, 'We only have one file remaining');
-    assert.notStrictEqual(files.indexOf(fullPath3), -1, 'The renamed file has been pushed in the stream');
+    assert.fileExist(fullPath3, true);
+    assert.streamLength(files, 1, true);
+    assert.fileInStream(files, fullPath3, true);
   }
 
   var configuration = [
