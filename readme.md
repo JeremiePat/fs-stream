@@ -215,7 +215,7 @@ string which is the content to push into the file.
 `mode` define how the new content must be pushed into the files:
 
 * If its value is `w` then the content of the files will be replaced.
-* If its value is `r+` then the content will be append at the end of each file.
+* If its value is `a` then the content will be append at the end of each file.
 
 The default value for `mode` is `w`;
 
