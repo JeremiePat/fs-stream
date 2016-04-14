@@ -32,7 +32,13 @@ API
 
 ### _module_(globPattern, [options])
 
-Return a stream of files and directories. For a full documentation of `options` and glob patterns, take a look at the [glob-stream documentation](https://github.com/gulpjs/glob-stream).
+Return a duplex stream of files and directories. For a full documentation of `options` and glob patterns, take a look at the [glob-stream documentation](https://github.com/gulpjs/glob-stream).
+
+The stream provide for each file a description object with the following properties:
+
+* `path`  : The full path to the file or directory,
+* `cwd`   : The path to the current working directory used by the glob pattern,
+* `stats` : An [fs.Stats](https://nodejs.org/api/fs.html#fs_class_fs_stats) providing the stats about the file or directory
 
 ### copy(dir, [options])
 
@@ -181,12 +187,15 @@ fs('**/*.md')
 
 Watch for changes on each files of the stream.
 
-When a change occurs, the `listener` function is called and get the full path of the changed file.
+When a change occurs, the `listener` function is called and get the full path of the changed file. It worth noting that the `listener` function is called in the context of the [FSWatcher](https://nodejs.org/api/fs.html#fs_class_fs_fswatcher) object. As the watcher is persistent, calling `this.close()` is the only way to stop the watcher.
 
-> **NOTE:** _Watching files is subject to the restrictions documented with the [fs.watch](https://nodejs.org/dist/latest-v4.x/docs/api/fs.html#fs_fs_watch_filename_options_listener) function._
+> **NOTE:** _Watching files is subject to the restrictions documented with the [fs.watch](https://nodejs.org/dist/latest-v4.x/docs/api/fs.html#fs_fs_watch_filename_options_listener) function, however the `listener` function is guaranteed to get the full path to the changed file._
+
+> **NOTE:** _If you need more robust watch solution you should consider using proper robust watcher such as [Chokidar](https://www.npmjs.com/package/chokidar) or [Gaze](https://www.npmjs.com/package/gaze)_
 
 ```js
-var fs = require('fs-stream');
+var path = require('path');
+var fs   = require('fs-stream');
 
 fs('**/*.md')
   .pipe(fs.watch(function (file) {
