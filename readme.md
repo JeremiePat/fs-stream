@@ -24,7 +24,7 @@ fs('**/*.*')
   .pipe(fs.watch(function (path) {
     console.log(path, 'has changed.');
   }))
-  .pipe(fs.write('\nHi!', 'r+'))
+  .pipe(fs.write('\nHi!', 'a'))
 ```
 
 API
@@ -38,7 +38,7 @@ The stream provide for each file a description object with the following propert
 
 * `path`  : The full path to the file or directory,
 * `cwd`   : The path to the current working directory used by the glob pattern,
-* `stats` : An [fs.Stats](https://nodejs.org/api/fs.html#fs_class_fs_stats) providing the stats about the file or directory
+* `stats` : An [fs.Stats](https://nodejs.org/api/fs.html#fs_class_fs_stats) object providing the stats about the file or directory
 
 ### copy(dir, [options])
 
@@ -227,5 +227,5 @@ var fs = require('fs-stream');
 fs('**/*.log')
   .pipe(fs.write(function (file) {
     return '\nLast update: ' + Date.now()
-  }, 'r+'));
+  }, 'a'));
 ```
