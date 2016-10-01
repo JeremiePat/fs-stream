@@ -42,11 +42,13 @@ describe('copy', function () {
   });
 
   var configuration = [
-    {                           },
-    {override: false, add: true },
-    {override: true,  add: false},
-    {override: false, add: false},
-    {override: true,  add: true }
+    {                                },
+    {override: false, add: true      },
+    {override: true,  add: false     },
+    {override: false, add: false     },
+    {override: true,  add: true      },
+    {override: true,  add: 'replace' },
+    {override: false, add: 'replace' }
   ];
 
   function buildFirstParam(paramType) {
@@ -61,7 +63,7 @@ describe('copy', function () {
 
       var title    = [
         (ovr ? '2 files ' : '1 file '), 'has been copied',
-        ' (', paramType, ' path, override: ', ovrType, ', add: ', addType, ')'
+        ' (', paramType, ' path, override: ', ovrType, ', add: ', add, ')'
       ].join('');
 
       it (title, function (done) {
@@ -76,8 +78,10 @@ describe('copy', function () {
         }
 
         function end() {
-          assert.fileInStream(files, f1d, add);
-          assert.fileInStream(files, f2d, add);
+          assert.fileInStream(files, f1o, !(add === 'replace'));
+          assert.fileInStream(files, f2o, !(add === 'replace'));
+          assert.fileInStream(files, f1d, !!add);
+          assert.fileInStream(files, f2d, !!add);
           assert.fileHasContent(f2d, ovr ? origin : dest, true);
           done();
         }

@@ -51,7 +51,7 @@ Copy all the files in the stream. `dir` can be:
 
 The optional `options` parameter is an object with the following optional keys:
 * `override`: A boolean indicating if the copy must override an existing file with the same name (default: **false**)
-* `add`: A boolean indicating if the copied file must be added to the stream. (default: **false**)
+* `add`: A boolean or a string indicating if the copied file must be added to the stream. (default: **false**). If the value is `replace` the copied file is added to the stream and the original file is removed from the stream.
 
 ```js
 var fs = require('fs-stream');
@@ -71,7 +71,7 @@ Create a file or directory within each directory in the stream. `path` can be
 
 The optional `options` parameter is an object with the following optionnal keys:
 * `type`: Either `file` or `directory` (default: **file**)
-* `add`: A boolean indicating if the copied file must be added to the stream. (default: **true**)
+* `add`: A boolean indicating if the created file must be added to the stream. (default: **true**)
 
 ```js
 var fs = require('fs-stream');
