@@ -14,6 +14,11 @@ describe('write', function () {
   var fullPath1 = path.join(root, dir, 'a.txt');
   var str       = 'Kikoo!';
 
+  function fn (path) {
+    assert.isDirOrFile(path, 'file')
+    return str;
+  }
+
   beforeEach(function () {
     fsx.ensureFileSync(fullPath1);
 
@@ -35,33 +40,33 @@ describe('write', function () {
   var configuration = [
     {param: [str     ], result: chkOverride},
     {param: [str, 'w'], result: chkOverride},
-    {param: [str, 'a'], result: chkAppend  }
+    {param: [str, 'a'], result: chkAppend  },
+    {param: [fn      ], result: chkOverride},
+    {param: [fn,  'w'], result: chkOverride},
+    {param: [fn,  'a'], result: chkAppend  }
   ];
 
-  function buildFirstParam(paramType) {
-    return function (conf) {
-      var title = [
-        'Write in files with a ',
-        paramType === 'fn' ? 'function' : 'string',
-        ' (write mode: ',
-        conf.param[1] === undefined ? 'default' : conf.param[1],
-        ')'
-      ].join('');
+  function testRunner(conf) {
+    var title = [
+      'Write in files with a ',
+      typeof conf.param[0],
+      ' (write mode: ',
+      conf.param[1] === undefined ? 'default' : conf.param[1],
+      ')'
+    ].join('');
 
-      it(title, function (done) {
-        fs(path.join(dir, '*.*'))
-          .pipe(fs.write.apply(fs, conf.param))
-          .on('end', done)
-          .on('error', done)
-          .pipe(through.obj(function (file, enc, cb) {
-            conf.result(file.path);
+    it(title, function (done) {
+      fs(path.join(dir, '*.*'))
+        .pipe(fs.write.apply(fs, conf.param))
+        .on('end', done)
+        .on('error', done)
+        .pipe(through.obj(function (file, enc, cb) {
+          conf.result(file.path);
 
-            cb(null, file);
-          }));
-      });
-    };
+          cb(null, file);
+        }));
+    });
   }
 
-  configuration.forEach(buildFirstParam('string'));
-  configuration.forEach(buildFirstParam('fn'));
+  configuration.forEach(testRunner);
 });
