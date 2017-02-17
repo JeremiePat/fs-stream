@@ -50,11 +50,16 @@ function streamLength(files, length, expected) {
   assert.strictEqual(ok, expected, 'We had ' + length + ' files in the stream');
 }
 
+function isWritableStream(stream) {
+  assert.ok(stream instanceof fs.WriteStream, 'A writable stream is expected')
+}
+
 module.exports = {
-  fileExist     : fileExist,
-  fileInStream  : fileInStream,
-  fileHasContent: fileHasContent,
-  isDirOrFile   : isDirOrFile,
-  pathMatch     : pathMatch,
-  streamLength  : streamLength,
+  fileExist       : fileExist,
+  fileInStream    : fileInStream,
+  fileHasContent  : fileHasContent,
+  isDirOrFile     : isDirOrFile,
+  isWritableStream: isWritableStream,
+  pathMatch       : pathMatch,
+  streamLength    : streamLength,
 };

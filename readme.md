@@ -34,7 +34,7 @@ API
 
 Return a duplex stream of files and directories. For a full documentation of `options` and glob patterns, take a look at the [glob-stream documentation](https://github.com/gulpjs/glob-stream).
 
-The stream provide for each file a description object with the following properties:
+For each file, the stream provides a description object with the following properties:
 
 * `path`  : The full path to the file or directory,
 * `cwd`   : The path to the current working directory used by the glob pattern,
@@ -212,14 +212,26 @@ Perform a simple writing action on all files from the stream. `data` can be:
 * `Function`: This function get the actual path to the file and must return a
 string which is the content to push into the file.
 
-`mode` define how the new content must be pushed into the files:
+`mode` define either how the new content must be pushed into the files:
 
-* If its value is `w` then the content of the files will be replaced.
-* If its value is `a` then the content will be append at the end of each file.
+There are two cases:
 
-The default value for `mode` is `w`;
+* If `data` is a string and
+  * `mode` value is `w` then the content of the files will be replaced.
+  * `mode` value is `a` then the content will be append at the end of each file.
 
-> **NOTE:** _For more advance writing action (like writing binary data), it is recommended to use ad hoc [writing streams](https://nodejs.org/api/fs.html#fs_fs_createwritestream_path_options)._
+In that case, the default value for `mode` is `w`;
+
+* If `data` is a function and
+  * `mode` value is `w` then the content of the files will be replaced by what
+    is return out of the function.
+  * `mode` value is `a` then the the value returned out of the function will be
+    append at the end of each file.
+  * `mode` value is [a stream configuration object](https://nodejs.org/api/fs.html#fs_fs_createwritestream_path_options), the function will get a
+  writable stream.
+
+In that case, the default value for `mode` is the default writing stream
+configuration object.
 
 ```js
 var fs = require('fs-stream');
@@ -228,4 +240,9 @@ fs('**/*.log')
   .pipe(fs.write(function (file) {
     return '\nLast update: ' + Date.now()
   }, 'a'));
+
+fs('**/*.txt')
+  .pipe(fs.write(function (stream) {
+    stream.end('Hi!')
+  }))
 ```

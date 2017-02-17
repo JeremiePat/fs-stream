@@ -41,7 +41,6 @@ describe('write', function () {
     {param: [str     ], result: chkOverride},
     {param: [str, 'w'], result: chkOverride},
     {param: [str, 'a'], result: chkAppend  },
-    {param: [fn      ], result: chkOverride},
     {param: [fn,  'w'], result: chkOverride},
     {param: [fn,  'a'], result: chkAppend  }
   ];
@@ -69,4 +68,38 @@ describe('write', function () {
   }
 
   configuration.forEach(testRunner);
+
+
+  // Testing asynchronous writing through writing stream
+
+  it('Write in files with a function (write mode: stream)', function (done) {
+    var s = {};
+    var c = 0;
+
+    fs(path.join(dir, '*.*'))
+      .pipe(fs.write(function (stream) {
+        assert.isWritableStream(stream)
+
+        s[stream.path] = stream;
+        c += 1;
+
+        stream.write(str);
+        stream.end(str);
+      }))
+      .on('error', done)
+      .pipe(through.obj(function (file, enc, cb) {
+        var stream = s[file.path];
+
+        assert.isWritableStream(stream)
+
+        stream.on('close', function () {
+          assert.fileHasContent(file.path, str + str, true)
+          c -= 1;
+
+          if (c <= 0) { done(); }
+        })
+
+        cb(null, file);
+      }));
+  })
 });
