@@ -1,6 +1,7 @@
 'use strict';
 
 var fsx       = require('fs-extra');
+var walk      = require('klaw')
 var path      = require('path');
 var minimatch = require('minimatch');
 var through   = require('through2');
@@ -59,7 +60,7 @@ describe('remove', function () {
           assert.streamLength(files, conf.expect, true);
 
           var count = [];
-          fsx.walk(path.join(root, dir)).on('data', function (f) {
+          walk(path.join(root, dir)).on('data', function (f) {
             count.push(f.path);
           }).on('end', function () {
             // conf.expect + 1 because fsx.walk add the initial
